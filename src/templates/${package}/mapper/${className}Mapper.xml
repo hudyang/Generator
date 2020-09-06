@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="${package}.dao.${className}DAO">
+	<!-- 返回值映射map -->
+	<resultMap id="${classNameLower}Domain" type="${package}.domain.${className}Domain">
+		<#list table.columns as column>
+			<result property="${column.name}" column="${column.dbName}" />
+		</#list>
+	</resultMap>
+
+
+	<!-- 查询数量公共sql -->
+	<sql id="total_size">
+		select count(1) from ${table.dbName}
+	</sql>
+
+	<!-- 查询字段公共sql -->
+	<sql id="select_all">
+		<![CDATA[
+		SELECT
+		<#list table.columns as column>
+			 ${column.dbName}<#if column_has_next>,</#if>
+		</#list>
+			FROM ${table.dbName}
+		]]>
+	</sql>
+
+	<!-- 查询条件 -->
+	<sql id="where">
+		where 1=1
+		<#list table.columns as column>
+		<if test = ${"\""}${ column.name + r" != null "  }${"\""}>
+		<![CDATA[ and ${column.dbName}  = ${ r"#{" + column.name }} ]]>
+	</if>
+		</#list>
+	</sql>
+
+	<!-- 集合查询 -->
+	<select id="queryList" resultMap="${classNameLower}Domain" >
+		<include refid="select_all"/>
+		<include refid="where" />
+	</select>
+
+	<!-- 计数查询 -->
+	<select id="queryCount" resultType="long">
+		<include refid="total_size"></include>
+		<include refid="where"></include>
+	</select>
+
+	<!-- 查询单个实体 -->
+	<select id="queryByParam" resultMap="${classNameLower}Domain" >
+		<include refid="select_all"/>
+		<include refid="where" />
+	</select>
+
+	<!-- 查询单个实体 -->
+	<select id="queryById" resultMap="${classNameLower}Domain" >
+		select * from ${table.dbName}
+		where ${table.columns[0].dbName}= ${ r"#{id}" }
+	</select>
+
+	<!-- 查询单个实体 -->
+	<select id="queryUniqueByParam" resultMap="${classNameLower}Domain" >
+		select * from ${table.dbName}
+		where ${table.columns[0].dbName}= ${ r"#{id}" }
+		limit 1
+	</select>
+
+	<!-- 新增 -->
+	<insert id="add"  parameterType="${package}.domain.${className}Domain" useGeneratedKeys="true"  keyProperty="${table.columns[0].name}">
+		insert into ${table.dbName}(
+			<#list table.columns as column>
+				${column.dbName}<#if column_has_next>,</#if>
+			</#list>
+		)values(
+			<#list table.columns as column>
+				${ r"#{" + column.name + r"}" }<#if column_has_next>,</#if>
+			</#list>
+		)
+	</insert>
+
+	<!-- 批量新增 -->
+	<insert id="addBatch"  parameterType="${package}.domain.${className}Domain" useGeneratedKeys="true"  keyProperty="${table.columns[0].name}">
+		insert into ${table.dbName}(
+			<#list table.columns as column>
+				${column.dbName}<#if column_has_next>,</#if>
+			</#list>
+		)values
+		<foreach collection ="list" item="item" separator =",">
+		(
+			<#list table.columns as column>
+				${ r"#{" + "item." + column.name + r"}" }<#if column_has_next>,</#if>
+			</#list>
+		)
+		</foreach>
+	</insert>
+
+	<!-- 编辑 -->
+	<update id="update" parameterType="${package}.domain.${className}Domain">
+		update ${table.dbName}
+			<set>
+			<#list table.columns as column>
+				<if test = ${"\""}${ column.name + r" != null "  }${"\""}>
+					${column.dbName} = ${ r"#{" + column.name + r"}" }<#if column_has_next>,</#if>
+				</if>
+			</#list>
+			</set>
+		where ${table.columns[0].dbName}= ${ r"#{" + table.columns[0].name + r"}" }
+	</update>
+
+	<!-- 批量编辑 -->
+	<update id="updateBatch" parameterType="${package}.domain.${className}Domain">
+	  <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+		update ${table.dbName}
+			<set>
+			<#list table.columns as column>
+				<if test = ${"\"item."}${ column.name + r" != null "  }${"\""}>
+					${column.dbName} = ${ r"#{"+ "item." + column.name + r"}" }<#if column_has_next>,</#if>
+				</if>
+			</#list>
+			</set>
+		where ${table.columns[0].dbName}= ${ r"#{" + "item." + table.columns[0].name + r"}" }
+	  </foreach>
+	</update>
+
+    <!-- 根据主键ID删除 -->
+	<delete id="delete">
+		delete from ${table.dbName}
+		<if test = ${"\"id"} != null ">
+			where ${table.columns[0].dbName}= ${ r"#{id}" }
+		</if>
+		<if test = ${"\"id"} == null ">
+			where 1 = 3
+		</if>
+	</delete>
+
+
+    <!-- 根据主键ID集合删除 -->
+	<delete id="deleteByIdList" parameterType="list">
+		delete from ${table.dbName}
+		<if test = "idList != null ">
+			where ${table.columns[0].dbName} in
+            <foreach collection="idList" item="item" index="index" open="(" separator="," close=")">
+               ${ r"#{item}" }
+            </foreach>
+		</if>
+		<if test = "idList == null ">
+			where 1 = 3
+		</if>
+	</delete>
+
+
+</mapper>
