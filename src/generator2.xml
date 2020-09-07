@@ -4,7 +4,7 @@
     <comment>
         代码生成器配置文件:
     </comment>
-    <entry key="basepackage">com.sysbase</entry>
+    <entry key="basepackage">com.station.listing.api.hepsiburada</entry>
 
 
     <entry key="outRoot">D:\Generator</entry>

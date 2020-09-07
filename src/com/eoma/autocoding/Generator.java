@@ -21,7 +21,7 @@ public class Generator {
 
     public Generator() throws Exception{
         properties = new Properties();
-        String fileDir = this.getClass().getClassLoader().getResource("generator.xml").getFile();
+        String fileDir = this.getClass().getClassLoader().getResource("generator2.xml").getFile();
         properties.loadFromXML(new FileInputStream(fileDir));
     }
 
@@ -96,9 +96,6 @@ public class Generator {
     }
 
     /**
-     * <p>Discription:[鐢熸垚鏄犲皠鏂囦欢鍜屽疄浣撶被]</p>
-     * Created on 2015骞�2鏈�4鏃�
-     * @param tableName 瑕佸０绉版槧灏勬枃浠跺拰瀹炰綋绫荤殑琛ㄥ悕绉�
      * @throws Exception
      */
     public void gen(String tableName) throws Exception{
@@ -156,10 +153,9 @@ public class Generator {
 
     public static void main(String[] args) throws Exception{
         Generator g = new Generator();
-        g.gen("t_role");
- 
-   
-        
+
+        g.gen("t_hb_test");
+
         System.out.println("table完成------------------");
     }
 }

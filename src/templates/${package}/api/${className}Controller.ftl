@@ -9,7 +9,6 @@ import io.swagger.annotations.Api;
 import ${package}.service.${className}Service;
 
 @RestController
-@Api(value="${table.name}", tags="${table.name}", description="${table.name}")
 @RequestMapping("${classNameLower}")
 public class ${className}Controller  {
 

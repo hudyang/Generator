@@ -6,7 +6,7 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class ${className}VO implements Serializable {
+public class ${className} implements Serializable {
 
 <#list table.columns as column>
 	/**${column.label}*/

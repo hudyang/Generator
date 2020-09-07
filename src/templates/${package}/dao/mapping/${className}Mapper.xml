@@ -2,9 +2,9 @@
  <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="${package}.dao.${className}DAO">
+<mapper namespace="${package}.dao.${className}Mapper">
 	<!-- 返回值映射map -->
-	<resultMap id="${classNameLower}Domain" type="${package}.domain.${className}Domain">
+	<resultMap id="${classNameLower}ResultMap" type="${package}.bean.entity.${className}">
 		<#list table.columns as column>
 			<result property="${column.name}" column="${column.dbName}" />
 		</#list>
@@ -38,7 +38,7 @@
 	</sql>
 
 	<!-- 集合查询 -->
-	<select id="queryList" resultMap="${classNameLower}Domain" >
+	<select id="queryList" resultMap="${classNameLower}ResultMap" >
 		<include refid="select_all"/>
 		<include refid="where" />
 	</select>
@@ -50,26 +50,19 @@
 	</select>
 
 	<!-- 查询单个实体 -->
-	<select id="queryByParam" resultMap="${classNameLower}Domain" >
+	<select id="queryByParam" resultMap="${classNameLower}ResultMap" >
 		<include refid="select_all"/>
 		<include refid="where" />
 	</select>
 
 	<!-- 查询单个实体 -->
-	<select id="queryById" resultMap="${classNameLower}Domain" >
+	<select id="queryById" resultMap="${classNameLower}ResultMap" >
 		select * from ${table.dbName}
 		where ${table.columns[0].dbName}= ${ r"#{id}" }
-	</select>
-
-	<!-- 查询单个实体 -->
-	<select id="queryUniqueByParam" resultMap="${classNameLower}Domain" >
-		select * from ${table.dbName}
-		where ${table.columns[0].dbName}= ${ r"#{id}" }
-		limit 1
 	</select>
 
 	<!-- 新增 -->
-	<insert id="add"  parameterType="${package}.domain.${className}Domain" useGeneratedKeys="true"  keyProperty="${table.columns[0].name}">
+	<insert id="add"  parameterType="${package}.bean.entity.${className}" useGeneratedKeys="true"  keyProperty="${table.columns[0].name}">
 		insert into ${table.dbName}(
 			<#list table.columns as column>
 				${column.dbName}<#if column_has_next>,</#if>
@@ -82,7 +75,7 @@
 	</insert>
 
 	<!-- 批量新增 -->
-	<insert id="addBatch"  parameterType="${package}.domain.${className}Domain" useGeneratedKeys="true"  keyProperty="${table.columns[0].name}">
+	<insert id="addBatch"  parameterType="${package}.bean.entity.${className}" useGeneratedKeys="true"  keyProperty="${table.columns[0].name}">
 		insert into ${table.dbName}(
 			<#list table.columns as column>
 				${column.dbName}<#if column_has_next>,</#if>
@@ -98,7 +91,7 @@
 	</insert>
 
 	<!-- 编辑 -->
-	<update id="update" parameterType="${package}.domain.${className}Domain">
+	<update id="update" parameterType="${package}.bean.entity.${className}">
 		update ${table.dbName}
 			<set>
 			<#list table.columns as column>
@@ -111,7 +104,7 @@
 	</update>
 
 	<!-- 批量编辑 -->
-	<update id="updateBatch" parameterType="${package}.domain.${className}Domain">
+	<update id="updateBatch" parameterType="${package}.bean.entity.${className}">
 	  <foreach collection="list" item="item" index="index" open="" close="" separator=";">
 		update ${table.dbName}
 			<set>
