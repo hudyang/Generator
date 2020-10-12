@@ -10,7 +10,7 @@ import ${package}.domain.${className}Domain;
 import ${package}.vo.${className}VO;
 import ${package}.service.${className}Service;
 import ${package}.service.base.impl.BaseServiceImpl;
-import ${package}.common.utils.Log;
+import com.common.utils.Log;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
